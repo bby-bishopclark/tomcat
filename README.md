@@ -1,23 +1,19 @@
 tomcat Cookbook
 ===============
-TODO: Enter the cookbook description here.
-
-e.g.
-This cookbook makes your favorite breakfast sandwich.
+This is a simple rehashing of the tomcat cookbook taking out a lot of the complicated things that don't work and aren't needed
+to make a simple deploy and a simple configuration with some new configuration options via libraries and valves.
 
 Requirements
 ------------
-TODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.
+Yum Based Linux (RHEL, Centos, Fedora, Amazon)
 
-e.g.
-#### packages
-- `toaster` - tomcat needs toaster to brown your bagel.
+#### Packages
+OpenJDK-1.7.0
+Tomcat7
 
 Attributes
 ----------
-TODO: List your cookbook attributes here.
 
-e.g.
 #### tomcat::default
 <table>
   <tr>
@@ -27,17 +23,88 @@ e.g.
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>['tomcat']['bacon']</tt></td>
+    <td><tt>['tomcat']['port']</tt></td>
+    <td>Int</td>
+    <td>What port for tomcat to listen on</td>
+    <td><tt>8080</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['proxy_port']</tt></td> 
+    <td>Int</td>
+    <td>Tomcat Proxy Port</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['max_threads']</tt><td>
+    <td>Int</td>
+    <td>Tomcat Max Threads</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['ssl_proxy_port']</tt></td>
+    <td>Int</td>
+    <td>Tomcat's SSL Proxy Port</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['catalina_options']</tt></td>
+    <td>String</td>
+    <td>Tomcat's Catalina Options</td>
+    <td><tt></tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['java_options']</tt></td>
+    <td>String</td>
+    <td>Options to the JVM</td>
+    <td><tt>-Xmx128M -Djava.awt.headless=true</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['nexus']</tt></td>
+    <td>String</td>
+    <td>URL of Nexus Server</td>
+    <td><tt></tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['extras']['jmx']</tt></td>
     <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
+    <td>Add the JMX Jar to the tomcat bin</td>
+    <td><tt>True</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['extras']['web']</tt></td>
+    <td>Boolean</td>
+    <td>Add the Web Services Jar to the tomcat bin</td>
+    <td><tt>True</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['extras']['juli']</tt></td>
+    <td>Boolean</td>
+    <td>Add the Tomcat Juli to the tomcat bin</td>
+    <td><tt>True</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['extras']['log4j']</tt></td>
+    <td>Boolean</td>
+    <td>Add the Juli adapter for log4j to the tomcat bin</td>
+    <td><tt>True</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['valves']</tt></td>
+    <td>List</td>
+    <td>A list of Hashes describing valves to put into the server.xml</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>['tomcat']['libs']</tt></td>
+    <td>List</td>
+    <td>A list of Hashes describing artifacts to retreive from Nexus for the Tomcat lib directory</td>
+    <td></td>
   </tr>
 </table>
 
 Usage
 -----
 #### tomcat::default
-TODO: Write usage instructions for each cookbook.
 
 e.g.
 Just include `tomcat` in your node's `run_list`:
@@ -65,4 +132,4 @@ e.g.
 
 License and Authors
 -------------------
-Authors: TODO: List authors
+Authors: Stephen Carman (scarman@coldlight.com)
