@@ -31,7 +31,8 @@ template "#{node['tomcat']['config_dir']}/server.xml" do
 		:shutdown_port 	=> node['tomcat']['shutdown_port'],
 		:port 		=> node['tomcat']['port'],
 		:proxy_port 	=> node['tomcat']['proxy_port'],
-		:max_threads 	=> node['tomcat']['max_threads']
+		:max_threads 	=> node['tomcat']['max_threads'],
+		:valves		=> node['tomcat']['valves']
 		})
 	action :create
 	notifies :restart, "service[#{node['tomcat']['service']}]"
