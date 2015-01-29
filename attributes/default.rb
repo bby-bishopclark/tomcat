@@ -6,8 +6,8 @@ default['tomcat']['shutdown_port'] 	= 8005
 default['tomcat']['catalina_options'] 	= ''
 default['tomcat']['java_options'] 	= '-Xmx128M -Djava.awt.headless=true'
 default['tomcat']['nexus'] 		= ''
-default['tomcat']['extras']['jmx']	= true
-default['tomcat']['extras']['web']	= true
+default['tomcat']['extras']['jmx']	= false
+default['tomcat']['extras']['web']	= false
 default['tomcat']['extras']['juli']	= true
 default['tomcat']['extras']['log4j']	= true
 default['tomcat']['extras']['jmx_url']	= 'http://apache.osuosl.org/tomcat/tomcat-7/v7.0.57/bin/extras/catalina-jmx-remote.jar'
