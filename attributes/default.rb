@@ -81,3 +81,59 @@ when 'redhat',  'amazon'
 	default['tomcat']['lib_dir'] 		= "#{node['tomcat']['home']}/lib"
 	default['tomcat']['endorsed_dir'] 	= "#{node['tomcat']['lib_dir']}/endorsed"
 end
+
+default['tomcat']['roles'] = [
+                              "tomcat",
+                              "role1",
+#                              "admin",
+#                              "admin-gui",
+#                              "admin-script",
+#                              "manager",
+#                              "manager-gui",
+#                              "manager-script",
+#                              "manager-jmx",
+#                              "manager-status",
+                              ]
+
+# this is temporary:
+# - end users shoudl have a vault set up 
+# - we need the vault-or-ghetto switch for data here
+# - per-host over-rides anyway, which should be crypto-dbags or vault
+# I KNOW the per-host creds will kill this code bit.  I know it.
+default['tomcat']['users'] = [{
+                                "username"	=> "tomcat",
+                                "password"	=> "changeme",
+                                "roles"   	=> "tomcat"
+                              }, {
+                                "username"	=> "role1",
+                                "password"	=> "changeme",
+                                "roles"		=> "role1"
+                              }, {
+                                "username"	=> "both",
+                                "password"	=> "changeme",
+                                "roles"   	=> "tomcat,role1" # arrays are ghetto for now; fix later
+                              },
+
+#                              {
+#                                "username"      => "admin",
+#                                "password"      => "sekr1t",
+#                                "roles"         => "admin,manager,admin-gui,admin-script,manager-gui,manager-script,manager-jmx,manager-status"
+#                              }
+
+]
+# for when the above sucks
+# default['tomcat']['users'] = {
+#   "tomcat" => {
+#     "password"  	=> "changeme",
+#     "roles"   	=> "tomcat"
+#   }, 
+#   "role1" => {
+#     "password"  	=> "changeme",
+#     "roles"		=> "role1"
+#   }, 
+#   "both" => {
+#     "password"  	=> "changeme",
+#     "roles"   	=> "tomcat,role1" # arrays are ghetto for now; fix later
+#   }}
+
+

@@ -3,9 +3,17 @@ tomcat CHANGELOG
 
 This file is used to list changes made in each version of the tomcat cookbook.
 
+0.2.0
+-----
+ - added gitignore
+ - added in junky temporary roles and default users to be over-ridden
+   per-host now, moved to dbags, moved to cryptod bags and then to
+   vault, in order.  With switches to handle it because we're not all
+   bored teens.
+ - template for /conf/dir/tomcat-users.xml
+
 0.1.0
 -----
-- [your_name] - Initial release of tomcat
 
 - - -
 Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.

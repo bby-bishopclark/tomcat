@@ -38,6 +38,16 @@ template "#{node['tomcat']['config_dir']}/server.xml" do
 	notifies :restart, "service[#{node['tomcat']['service']}]"
 end
 
+template "#{node['tomcat']['config_dir']}/tomcat-users.xml" do
+  mode 0664
+  variables ({
+               :roles		=> node['tomcat']['roles'],
+               :users		=> node['tomcat']['users']
+             })
+  action	:create
+  notifies	:restart, "service[#{node['tomcat']['service']}]"
+end
+
 template "/etc/sysconfig/#{node['tomcat']['service']}" do
 	source "tomcat.erb"
 	mode 0664

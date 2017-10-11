@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!-- DO NOT EDIT BY HAND -- this file managed by Ccnfig management 
+     (<%= cookbook_name %>::<%= recipe_name %>)
+     Changes will be over-written completely.  -->
+
+<tomcat-users>
+  <% if @roles -%>
+    <% @roles.each do |role| -%>
+  <role rolename="<%= role %>"/>
+    <% end -%>
+  <% end -%>
+  <% if @users -%>
+    <% @users.each do |user| -%>
+  <user <%= user.map{|k,v| "#{k}=\"#{v}\""}.join(" ") %>/>
+    <% end -%>
+  <% end -%>
+</tomcat-users>
