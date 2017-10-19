@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<!-- DO NOT EDIT BY HAND -- this file managed by Ccnfig management 
+<!-- DO NOT EDIT BY HAND - this file managed by Ccnfig management 
      (<%= cookbook_name %>::<%= recipe_name %>)
      Changes will be over-written completely.  -->
 
@@ -11,8 +11,8 @@
     <% end -%>
   <% end -%>
   <% if @users -%>
-    <% @users.each do |user| -%>
-  <user <%= user.map{|k,v| "#{k}=\"#{v}\""}.join(" ") %>/>
+    <% @users.each do |name, user| -%>
+  <user username="<%= name %>" <%= user.reject{|k,v| k=='username'}.map{|k,v| "#{k}=\"#{v}\""}.join(" ") %>/>
     <% end -%>
   <% end -%>
 </tomcat-users>

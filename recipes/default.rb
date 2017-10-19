@@ -26,12 +26,16 @@ end
 
 template "#{node['tomcat']['config_dir']}/server.xml" do
 	source "server.xml.erb"
-	mode 0664
+  owner		node['tomcat']['user']
+  group		node['tomcat']['group']
+	mode 0440
 	variables ({
 		:shutdown_port 	=> node['tomcat']['shutdown_port'],
 		:port 		=> node['tomcat']['port'],
 		:proxy_port 	=> node['tomcat']['proxy_port'],
 		:max_threads 	=> node['tomcat']['max_threads'],
+                :globalrez	=> node['tomcat']['globalrez'],
+                :connectors	=> node['tomcat']['connectors'],
 		:valves		=> node['tomcat']['valves']
 		})
 	action :create
@@ -39,7 +43,10 @@ template "#{node['tomcat']['config_dir']}/server.xml" do
 end
 
 template "#{node['tomcat']['config_dir']}/tomcat-users.xml" do
-  mode 0664
+  owner		node['tomcat']['user']
+  group		node['tomcat']['group']
+	mode 0440
+#  mode 0664
   variables ({
                :roles		=> node['tomcat']['roles'],
                :users		=> node['tomcat']['users']

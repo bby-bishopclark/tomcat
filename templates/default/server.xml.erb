@@ -1,32 +1,74 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<!-- DO NOT EDIT BY HAND -- this file managed by Ccnfig management 
+<!-- DO NOT EDIT BY HAND - this file managed by Ccnfig management 
      (<%= cookbook_name %>::<%= recipe_name %>)
      Changes will be over-written completely.  -->
 
 <Server port="<%= @shutdown_port %>" shutdown="SHUTDOWN">
   <Listener className="org.apache.catalina.core.JasperListener" />
   <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
-  <Service name="Catalina">
-  <% if @port -%>
-    <Connector port="<%= @port %>" protocol="HTTP/1.1"
-               connectionTimeout="20000"
-               URIEncoding="UTF-8"
-             <% if @proxy_port -%>
-               proxyPort="<%= @proxy_port %>"
-             <% end -%>
-             <% if @max_threads -%>
-               maxThreads="<%= @max_threads %>"
-             <% end -%>
-             />
+  <% if @globalrez -%>
+  <GlobalNamingResources>
+    <%   if @globalrez.include?('resources') 
+           @globalrez['resources'].each do |key, rez| -%>
+    <%
+           if rez.include?('comment') -%>
+    <!-- <%= rez['comment'].scan(/\S.{0,50}\S(?=\s|$)|\S+/).join("\n"+' '*9) %>
+    -->
+    <%     end -%>
+    <Resource <%= {'name' => key}.
+    		  merge(rez
+		    .to_hash
+		    .reject{|k,v| ['comment'].include?(k) })
+		    .map{|k,v| "#{k}=\"#{v}\""}
+		    .join("\n"+' '*14)%> />
+
+    <%   end -%>
+    <% end -%>
+  </GlobalNamingResources>
   <% end -%>
+  <Service name="Catalina">
+  <% if @connectors -%>
+    <% @connectors.each do |k,rlm| -%>
+    <Connector port="<%= k %>" <%= {'protocol' => "HTTP/1.1"}.
+                                   merge(rlm
+				     .to_hash)
+				     .reject{|k,v| k=='comment'|| v.nil? }	# prune comments
+				     .reject{|k,v| ['maxSpareThreads',		# prune old parms
+				                    'xmlValidation',
+						    'xmlNamespaceAware'].include?(k) }
+				     .map{|k,v| "#{k}=\"#{v}\""}
+				     .join("\n"+' '*15)%> />
+    <%   end -%>
+  <% end -%>
+
     <Engine name="Catalina" defaultHost="localhost">
-      <Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true" xmlValidation="false" xmlNamespaceAware="false">
-        
+      <% if @globalrez -%>
+            <Realm className="org.apache.catalina.realm.LockOutRealm">
+	      <%   if @globalrez.include?('resources')
+	             @globalrez['resources']
+		       .select{|k, v| v['type'] == 'org.apache.catalina.UserDatabase'}
+		       .each do |k,rlm| -%>
+	      <%     if rlm.include?('comment') -%>
+        <!-- This Realm uses the UserDatabase configured in the global JNDI
+             resources under the key "<%= k %>".  Any edits
+             that are performed against this UserDatabase are immediately
+             available for use by the Realm.  -->
+	      <%     end -%>
+	        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+                       resourceName="<%= k %>"/>
+	      <%   end -%>
+	    <%   end -%>
+	    </Realm>
+      <%   end -%>
+
+      <Host name="localhost"  appBase="webapps" 
+            unpackWARs="true" autoDeploy="true">
+
 	<% if @valves -%>
-		<% @valves.each do |valve| -%>
-			<Valve <%= valve.map{|k,v| "#{k}=\"#{v}\""}.join(" ") %> />
-		<% end -%>
+	<%   @valves.each do |valve| -%>
+        <Valve <%= valve.map{|k,v| "#{k}=\"#{v}\""}.join("\n"+' '*15) %> />
+	<%   end -%>
 	<% end -%>
 
       </Host>

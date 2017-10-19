@@ -1,6 +1,13 @@
+# if you change this in a later override, you will need to change the hash first:
+#    newport=9007
+#    default['tomcat']['connectors'][newport] = node['tomcat']['connectors'][node['tomcat']['port']]
+#    default['tomcat']['connectors'].delete(node['tomcat']['port'])
+#    default['tomcat']['port'] = newport
+
 default['tomcat']['port'] 		= 8080
+
 default['tomcat']['proxy_port'] 	= nil
-default['tomcat']['max_threads'] 	= nil
+default['tomcat']['max_threads'] 	= nil	# default 200
 default['tomcat']['ssl_proxy_port'] 	= nil
 default['tomcat']['shutdown_port'] 	= 8005
 default['tomcat']['catalina_options'] 	= ''
@@ -82,58 +89,66 @@ when 'redhat',  'amazon'
 	default['tomcat']['endorsed_dir'] 	= "#{node['tomcat']['lib_dir']}/endorsed"
 end
 
+# https://tomcat.apache.org/tomcat-8.0-doc/config/http.html
+# set some defaults for newer template system, based on values above.
+default['tomcat']['connectors'] = {
+  node['tomcat']['port'] => {
+    "connectionTimeout" => "20000",
+    "proxy_port" => node['tomcat']['proxy_port'],
+    "max_threads" => node['tomcat']['max_threads'],
+    "URIEncoding" => "UTF-8"
+  }
+}
+
+
 default['tomcat']['roles'] = [
                               "tomcat",
                               "role1",
-#                              "admin",
-#                              "admin-gui",
-#                              "admin-script",
-#                              "manager",
-#                              "manager-gui",
-#                              "manager-script",
-#                              "manager-jmx",
-#                              "manager-status",
+                              "admin",
+                              "admin-gui",
+                              "admin-script",
+                              "manager",
+                              "manager-gui",
+                              "manager-script",
+                              "manager-jmx",
+                              "manager-status",
                               ]
 
+
+default['tomcat']['globalrez']['resources'] = {
+  "UserDatabase" => {
+    'comment' => "Editable user database that can also be used by UserDatabaseRealm to authenticate users",
+    'auth' => "Container",
+    'type' => "org.apache.catalina.UserDatabase",
+    'description' => "User database that can be updated and saved",
+    'factory' => "org.apache.catalina.users.MemoryUserDatabaseFactory",
+    'pathname' => "conf/tomcat-users.xml"
+  }
+}
+
+
 # this is temporary:
-# - end users shoudl have a vault set up 
+# - end users should have a vault set up 
 # - we need the vault-or-ghetto switch for data here
 # - per-host over-rides anyway, which should be crypto-dbags or vault
 # I KNOW the per-host creds will kill this code bit.  I know it.
-default['tomcat']['users'] = [{
-                                "username"	=> "tomcat",
-                                "password"	=> "changeme",
-                                "roles"   	=> "tomcat"
-                              }, {
-                                "username"	=> "role1",
-                                "password"	=> "changeme",
-                                "roles"		=> "role1"
-                              }, {
-                                "username"	=> "both",
-                                "password"	=> "changeme",
-                                "roles"   	=> "tomcat,role1" # arrays are ghetto for now; fix later
-                              },
-
-#                              {
-#                                "username"      => "admin",
-#                                "password"      => "sekr1t",
-#                                "roles"         => "admin,manager,admin-gui,admin-script,manager-gui,manager-script,manager-jmx,manager-status"
-#                              }
-
-]
-# for when the above sucks
-# default['tomcat']['users'] = {
-#   "tomcat" => {
-#     "password"  	=> "changeme",
-#     "roles"   	=> "tomcat"
-#   }, 
-#   "role1" => {
-#     "password"  	=> "changeme",
-#     "roles"		=> "role1"
-#   }, 
-#   "both" => {
-#     "password"  	=> "changeme",
-#     "roles"   	=> "tomcat,role1" # arrays are ghetto for now; fix later
-#   }}
+default['tomcat']['users'] = {
+  "tomcat" => {
+    "password"  => "changeme",
+    "roles"   	=> "tomcat"
+  },
+  "role1" => {
+    "password"  => "changeme",
+    "roles"	=> "role1"
+  }, 
+  "both" => {
+    "password"  => "changeme",
+    "roles"   	=> "tomcat,role1" # arrays are ghetto for now; fix later
+  },
+  "manager" => {
+    "password" => "s3cret",
+    "roles" => "manager-gui"
+  }
+}
 
 
