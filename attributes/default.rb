@@ -55,8 +55,23 @@ default['tomcat']['libs'] = [
 				}
 			]
 
-case node['platform']
-when 'centos', 'fedora'
+case "#{node['platform']}#{node['platform_version'].split('.')[0]}"
+when 'redhat6',  /amazon.*/
+	default['tomcat']['package'] 		= 'tomcat7'
+	default['tomcat']['service'] 		= 'tomcat7'
+	default['tomcat']['user'] 		= 'tomcat'
+	default['tomcat']['group'] 		= 'tomcat'
+	default['tomcat']['home'] 		= "/usr/share/tomcat7"
+	default['tomcat']['base'] 		= "/usr/share/tomcat7"
+	default['tomcat']['config_dir'] 	= "/etc/tomcat7"
+	default['tomcat']['log_dir'] 		= "/var/log/tomcat7"
+	default['tomcat']['tmp_dir'] 		= "/var/cache/tomcat7/temp"
+	default['tomcat']['work_dir'] 		= "/var/cache/tomcat7/work"
+	default['tomcat']['context_dir'] 	= "#{node['tomcat']['config_dir']}/Catalina/localhost"
+	default['tomcat']['webapp_dir'] 	= "#{node['tomcat']['home']}/webapps"
+	default['tomcat']['lib_dir'] 		= "#{node['tomcat']['home']}/lib"
+	default['tomcat']['endorsed_dir'] 	= "#{node['tomcat']['lib_dir']}/endorsed"
+else		# centos, redhat7, fedora
 	default['tomcat']['package'] 		= 'tomcat'
 	default['tomcat']['service'] 		= 'tomcat'	
 	default['tomcat']['user'] 		= 'tomcat'
@@ -71,21 +86,6 @@ when 'centos', 'fedora'
 	default['tomcat']['webapp_dir'] 	= "#{node['tomcat']['home']}/webapps"
 	default['tomcat']['lib_dir'] 		= "#{node['tomcat']['home']}/lib"
 	default['tomcat']['bin_dir']		= "#{node['tomcat']['home']}/bin"
-	default['tomcat']['endorsed_dir'] 	= "#{node['tomcat']['lib_dir']}/endorsed"
-when 'redhat',  'amazon'
-	default['tomcat']['package'] 		= 'tomcat7'
-	default['tomcat']['service'] 		= 'tomcat7'
-	default['tomcat']['user'] 		= 'tomcat'
-	default['tomcat']['group'] 		= 'tomcat'
-	default['tomcat']['home'] 		= "/usr/share/tomcat7"
-	default['tomcat']['base'] 		= "/usr/share/tomcat7"
-	default['tomcat']['config_dir'] 	= "/etc/tomcat7"
-	default['tomcat']['log_dir'] 		= "/var/log/tomcat7"
-	default['tomcat']['tmp_dir'] 		= "/var/cache/tomcat7/temp"
-	default['tomcat']['work_dir'] 		= "/var/cache/tomcat7/work"
-	default['tomcat']['context_dir'] 	= "#{node['tomcat']['config_dir']}/Catalina/localhost"
-	default['tomcat']['webapp_dir'] 	= "#{node['tomcat']['home']}/webapps"
-	default['tomcat']['lib_dir'] 		= "#{node['tomcat']['home']}/lib"
 	default['tomcat']['endorsed_dir'] 	= "#{node['tomcat']['lib_dir']}/endorsed"
 end
 
